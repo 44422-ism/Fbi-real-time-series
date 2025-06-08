@@ -1,0 +1,98 @@
+# Install Prophet and other utilities (quiet install)
+!pip install prophet seaborn --quiet
+
+IMPORT LIBRARIES
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from prophet import Prophet
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+UPLOAD YOUR DATA FILES
+
+from google.colab import files
+uploaded = files.upload()
+
+# Paths after upload
+train_path = 'Train.xlsx'
+test_path = 'Test (2).csv'
+
+# Load datasets
+train_df = pd.read_excel(train_path)
+test_df  = pd.read_csv(test_path)
+
+print(f"Train shape: {train_df.shape}")
+print(f"Test  shape: {test_df.shape}")
+
+print("Duplicate rows in TRAIN :", train_df.duplicated().sum())
+print("Duplicate rows in TEST  :", test_df.duplicated().sum())
+print("Missing values in TRAIN:\n", train_df.isna().sum())
+print("\nMissing values in TEST:\n",  test_df.isna().sum())
+plt.figure(figsize=(12,4))
+sns.heatmap(train_df.isna(), cbar=False)
+plt.title("TRAIN missing values")
+plt.show()
+
+plt.figure(figsize=(12,4))
+sns.heatmap(test_df.isna(), cbar=False)
+plt.title("TEST missing values")
+plt.show()
+train_df.info()
+print("\nColumns:", train_df.columns.tolist())
+print("\nDescriptive statistics:\n", train_df.describe())
+
+print("\nUnique values per column:")
+for col in train_df.columns:
+    print(f"{col}: {train_df[col].nunique()}")
+# --- TRAIN dataset ---
+# Assume columns: 'Date' (YYYY-MM-DD) and 'Incident_Counts'
+train = train_df[['Date', 'Incident_Counts']].copy()
+train.columns = ['ds', 'y']
+train['ds'] = pd.to_datetime(train['ds'])
+
+# --- TEST dataset ---
+# If YEAR & MONTH exist, construct a date; else use 'Date'
+if {'YEAR', 'MONTH'}.issubset(test_df.columns):
+    test_df['ds'] = pd.to_datetime(test_df['YEAR'].astype(str) + '-' +
+                                   test_df['MONTH'].astype(str).str.zfill(2) + '-01')
+elif 'Date' in test_df.columns:
+    test_df['ds'] = pd.to_datetime(test_df['Date'])
+
+# Align target column name
+if 'Incident_Counts' in test_df.columns:
+    test_df.rename(columns={'Incident_Counts': 'y'}, inplace=True)
+m = Prophet()
+m.fit(train)
+future   = test_df[['ds']]  # Prophet expects a 'ds' column
+forecast = m.predict(future)
+
+pred_df = forecast[['ds', 'yhat']].copy()
+
+EVALUATE 
+
+# Merge actual y from test and predicted yhat
+evaluation = test_df[['ds', 'y']].merge(pred_df, on='ds', how='left')
+
+mae  = mean_absolute_error(evaluation['y'], evaluation['yhat'])
+rmse = mean_squared_error(evaluation['y'], evaluation['yhat'], squared=False)
+
+print(f"MAE : {mae:.3f}")
+print(f"RMSE: {rmse:.3f}")
+
+#PLOT V/S PREDICT 
+
+plt.figure(figsize=(14,6))
+plt.plot(evaluation['ds'], evaluation['y'],    label='Actual')
+plt.plot(evaluation['ds'], evaluation['yhat'], label='Predicted')
+plt.title("Monthly Crime Counts: Actual vs. Prophet Prediction")
+plt.xlabel("Date")
+plt.ylabel("Incidents")
+plt.legend()
+plt.show()
+
+DOWNLOAD PEDICTIONS
+
+evaluation.to_csv('crime_predictions.csv', index=False)
+files.download('crime_predictions.csv')
