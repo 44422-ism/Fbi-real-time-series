@@ -21,11 +21,11 @@ Beginner-friendly implementation for learning forecasting models
 
 Technologies Used
 
-Python
-Prophet (Meta/Facebook)
-Pandas
-Matplotlib
-Google Colab
+1. Python
+2. Prophet (Meta/Facebook)
+3. Pandas
+4. Matplotlib
+5. Google Colab
 
 Dataset
 
@@ -33,52 +33,52 @@ The model uses historical crime data from the FBI crime statistics dataset, whic
 
 The dataset is processed to:
 
-clean missing values
-structure timestamps for time series analysis
-aggregate crime counts by month
-Model Workflow
-Data preprocessing and cleaning
-Formatting data for Prophet (ds and y columns)
-Training the Prophet forecasting model
-Generating future predictions
-Visualizing trends and forecast results
+* clean missing values, 
+* structure timestamps for time series analysis, 
+* aggregate crime counts by month
+Model Workflow, 
+* Data preprocessing and cleaning
+Formatting data for Prophet (ds and y columns), 
+* Training the Prophet forecasting model, 
+Generating future predictions, 
+* Visualizing trends and forecast results.
 
 Example Output
 
 The model generates:
 
-Forecasted monthly crime counts
-Trend analysis
-Seasonality visualization
-Confidence intervals for predictions
+Forecasted monthly crime counts, 
+Trend analysis, 
+Seasonality visualization, 
+Confidence intervals for predictions, 
 
 These results help illustrate how crime patterns may evolve over time.
 
 How to Run the Project
 
-Open the project notebook in Google Colab
-Install Prophet:
+1. Open the project notebook in Google Colab
+2. Install Prophet:
 
 pip install prophet
 
-Run the notebook cells sequentially
-View the generated forecasts and plots
+3. Run the notebook cells sequentially
+4. View the generated forecasts and plots
 
 Future Improvements
 
-Add support for multiple crime categories
-Build a real-time dashboard
-Integrate interactive visualizations
-Expand dataset coverage for higher accuracy
+1. Add support for multiple crime categories
+2. Build a real-time dashboard
+3. Integrate interactive visualizations
+4. Expand dataset coverage for higher accuracy
 
 Learning Outcomes
 
 Through this project, I gained practical experience in:
 
-Time series forecasting
-Data preprocessing
-Model training and evaluation
-Visualization of predictive analytics results
+* Time series forecasting
+* Data preprocessing
+* Model training and evaluation
+* Visualization of predictive analytics results
 
 Author
 
